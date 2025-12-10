@@ -32,7 +32,7 @@ struct ContentView: View {
                 NavigationStack {
                     switch selectedView {
                     case .collections:
-                        NewCollectionView(fi: fi)
+                        CollectionsView(fi: fi)
                     case .sort:
                         Text("Sort View")
                             .navigationTitle("Sort")

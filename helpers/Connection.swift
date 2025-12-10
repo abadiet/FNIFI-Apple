@@ -10,21 +10,24 @@ class Connection : Decodable, Encodable, ObservableObject {
         case SMB = "smb"
         case None = "none"
     }
+    
+    private enum CodingKeys: String, CodingKey {
+        case id, kind, server, share, username, path
+    }
+
+    var id = UUID()
     @Published var kind: Kind = Kind.None
     @Published var server: String = ""
     var share: String = ""
     var username: String = ""
     var password: String = ""
     var path: String = ""
-
-    private enum CodingKeys: String, CodingKey {
-        case kind, server, share, username, path
-    }
     
     init() {}
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
         kind = try container.decode(Kind.self, forKey: .kind)
         server = try container.decodeIfPresent(String.self, forKey: .server) ?? ""
         share = try container.decodeIfPresent(String.self, forKey: .share) ?? ""
@@ -34,6 +37,7 @@ class Connection : Decodable, Encodable, ObservableObject {
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
         try container.encode(kind, forKey: .kind)
         try container.encode(server, forKey: .server)
         try container.encode(share, forKey: .share)
@@ -41,10 +45,15 @@ class Connection : Decodable, Encodable, ObservableObject {
         try container.encode(path, forKey: .path)
     }
 
-    func save(key: String) {
+    func save(key: String = "") {
+        var actualKey = key
+        if actualKey == "" {
+            actualKey = "Connection-\(id)"
+        }
+
         /* Save in UserDefaults */
         if let encoded = try? JSONEncoder().encode(self) {
-            UserDefaults.standard.set(encoded, forKey: key)
+            UserDefaults.standard.set(encoded, forKey: actualKey)
         }
         
         /* Save in Keychain */
@@ -82,8 +91,16 @@ class Connection : Decodable, Encodable, ObservableObject {
             return nil
         }
     }
+    
+    func delete() {
+        /* Delete from UserDefaults */
+        let key = "Connection-\(id)"
+        UserDefaults.standard.removeObject(forKey: key)
+        
+        /* We keep the password in Keychain as we don't know if it is used somewhere else */
+    }
 
-    static func get(key: String) -> Connection? {
+    static func Get(key: String) -> Connection? {
         if let data = UserDefaults.standard.data(forKey: key) {
             if let conn = try? JSONDecoder().decode(Connection.self, from: data) {
                 
@@ -111,5 +128,9 @@ class Connection : Decodable, Encodable, ObservableObject {
             }
         }
         return nil
+    }
+    
+    static func Get(id: UUID) -> Connection? {
+        return Get(key: "Connection-\(id)")
     }
 }
