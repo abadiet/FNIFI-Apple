@@ -15,21 +15,29 @@ class FNIFIWrapper : ObservableObject {
     @Published var files = [UnsafePointer<fnifi.file.File>]()
     
     init() {
+        /* Load from UserDefaults */
         isSetup = false
+        if let storing = Connection.get(key: "FNIFI") {
+            setup(storing: storing)
+        }
     }
 
-    func setup(
-        storing: UnsafeMutablePointer<fnifi.connection.IConnection>
-    ) {
-        self.storing = fnifi.utils.SyncDirectory(storing, cachesPath)
-        self.fi = fnifi.FNIFI(&self.storing!)
-        isSetup = true
+    func setup(storing: Connection) {
+        if let stor = storing.build() {
+            self.storing = fnifi.utils.SyncDirectory(stor, cachesPath)
+            self.fi = fnifi.FNIFI(&self.storing!)
+            isSetup = true
+        }
     }
 
-    func use(indexing: UnsafeMutablePointer<fnifi.connection.IConnection>, storing: UnsafeMutablePointer<fnifi.connection.IConnection>) {
-        let index = self.colls.count
-        self.colls.append(CollectionPair(indexing: indexing, storing: storing))
-        self.fi!.addCollection(&self.colls[index].coll)
+    func use(indexing: Connection, storing: Connection) {
+        if let ind = indexing.build() {
+            if let stor = storing.build() {
+                let index = self.colls.count
+                self.colls.append(CollectionPair(indexing: ind, storing: stor))
+                self.fi!.addCollection(&self.colls[index].coll)
+            }
+        }
     }
 
     func sort(expr: String) {

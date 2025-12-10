@@ -3,7 +3,7 @@ import FNIFIModule
 
 struct ContentView: View {
     @StateObject private var fi = FNIFIWrapper()
-    @State var fiStoring: UnsafeMutablePointer<fnifi.connection.IConnection>?
+    @StateObject var fiStoring = Connection()
     @State var navPath = NavigationPath()
 
     @State private var zoom: CGFloat = 3.0
@@ -84,14 +84,16 @@ struct ContentView: View {
             } detail: {
                 NavigationStack(path: $navPath) {
                     VStack {
-                        if (fiStoring == nil) {
-                            NewConnectionView(connection: $fiStoring, navPath: $navPath)
+                        if (fiStoring.kind == Connection.Kind.None) {
+                            NewConnectionView(connection: fiStoring, navPath: $navPath)
                                 .navigationTitle("Setup the main cache")
                                 .navigationSubtitle("Where do you want to store the cache?")
                         } else {
                             Text("Setting up...")
                             .task {
-                                fi.setup(storing: fiStoring!)
+                                fi.setup(storing: fiStoring)
+                                fiStoring.save(key: "FNIFI")
+                                fiStoring.kind = Connection.Kind.None
                             }
                         }
                     }

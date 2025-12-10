@@ -8,7 +8,7 @@ Apple's Photos application but with added connectivity, filtering and sorting al
 
 To build the application, you need to change several XCode settings as well as compiling the [FNIFI](https://github.com/abadiet/FNIFI) library.
 Unfortunately, mixing a C++ library with Swift/Objective-C++ code is not easy, but the funniest is when you add cross-compilation... I wish you good luck.
-[Here](https://github.com/abadiet/FNIFI-Apple/dependencies/build-fnifi.sh) is how I did (still not sure this was the proper way) for **compiling the application for MacOS arm64 and IOS arm64 architectures**.
+[Here](https://github.com/abadiet/FNIFI-Apple/blob/main/dependencies/build-fnifi.sh) is how I did (still not sure this was the proper way) for **compiling the application for MacOS arm64 and IOS arm64 architectures**.
 Let's detailed the process a bit.
 
 ### XCode settings to change
@@ -64,4 +64,4 @@ Once again, this will produce fnifi.xcframework (needed for using the FNIFI C++ 
 You should then be able to build the application through XCode.
 
 ### Multiple architectures
-Check [my personal script](https://github.com/abadiet/FNIFI-Apple/dependencies/build-fnifi.sh)  for compiling for both MacOS arm64 and IOS arm64 architectures at the same time.
+Check [my personal script](https://github.com/abadiet/FNIFI-Apple/blob/main/dependencies/build-fnifi.sh)  for compiling for both MacOS arm64 and IOS arm64 architectures at the same time.
