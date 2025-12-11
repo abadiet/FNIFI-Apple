@@ -1,5 +1,4 @@
 import SwiftUI
-import FNIFIModule
 
 
 struct NewCollectionView: View {
@@ -28,20 +27,22 @@ struct NewCollectionView: View {
                         .navigationTitle("Storing 2/3")
                         .navigationSubtitle("Where do you want to store the cache?")
                 } else if (name == "") {
-                    TextField("Name", text: $tmpName)
-                        .disableAutocorrection(true)
-                        .navigationTitle("Name 3/3")
-                        .navigationSubtitle("Give it a name")
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button(action: {
-                                    name = tmpName
-                                }) {
-                                    Image(systemName: "checkmark")
+                    List {
+                        TextField("Name", text: $tmpName)
+                            .disableAutocorrection(true)
+                            .navigationTitle("Name 3/3")
+                            .navigationSubtitle("Give it a name")
+                            .toolbar {
+                                ToolbarItem(placement: .confirmationAction) {
+                                    Button(action: {
+                                        name = tmpName
+                                    }) {
+                                        Image(systemName: "checkmark")
+                                    }
+                                    .disabled(tmpName.isEmpty)
                                 }
-                                .disabled(tmpName.isEmpty)
                             }
-                        }
+                    }
                 } else {
                     Text("Collection successfuly added!")
                         .task({

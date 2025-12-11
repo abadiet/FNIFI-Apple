@@ -29,6 +29,8 @@ class FNIFIWrapper : ObservableObject {
     private var storing: fnifi.utils.SyncDirectory?
     private var colls = [CollectionPair]()
     @Published var files = [UnsafePointer<fnifi.file.File>]()
+    private var sortExpr: String = ""
+    private var filterExpr: String = ""
     
     init() {
         /* Load from UserDefaults */
@@ -40,8 +42,13 @@ class FNIFIWrapper : ObservableObject {
 
     func setup(storing: Connection) {
         if let stor = storing.build() {
+            self.colls.removeAll()
+            self.files.removeAll()
+            self.sortExpr = ""
+            self.filterExpr = ""
             self.storing = fnifi.utils.SyncDirectory(stor, cachesPath)
             self.fi = fnifi.FNIFI(&self.storing!)
+            updateFiles()
             isSetup = true
         }
     }
@@ -58,10 +65,20 @@ class FNIFIWrapper : ObservableObject {
 
     func sort(expr: String) {
         self.fi!.sort(std.string(expr))
+        sortExpr = expr
+    }
+    
+    func isSortingExpr(expr: String) -> Bool {
+        return expr == sortExpr
     }
 
     func filter(expr: String) {
         self.fi!.filter(std.string(expr))
+        filterExpr = expr
+    }
+    
+    func isFilteringExpr(expr: String) -> Bool {
+        return expr == filterExpr
     }
     
     func defragment() {

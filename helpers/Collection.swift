@@ -3,7 +3,7 @@ import SwiftUI
 import Foundation
 
 
-class Collection : Encodable, Decodable, Identifiable, Hashable {
+struct Collection : Encodable, Decodable, Identifiable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case id, indexingId, storingId, name
     }
@@ -31,7 +31,7 @@ class Collection : Encodable, Decodable, Identifiable, Hashable {
         self.name = name
     }
     
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
         indexingId = try container.decode(UUID.self, forKey: .indexingId)

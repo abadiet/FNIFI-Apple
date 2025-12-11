@@ -16,6 +16,7 @@ struct CollectionsView: View {
         if (!newColl) {
             VStack {
                 ForEach(colls) { coll in
+                    let isUsed = fi.checkIsUsing(coll: coll)
                     HStack {
                         Button(action: {
                             fi.use(coll: coll)
@@ -23,23 +24,23 @@ struct CollectionsView: View {
                         }) {
                             Text(coll.name)
                         }
-                        .disabled(fi.checkIsUsing(coll: coll))
+                        .disabled(isUsed)
                         Button(action: {
                             coll.delete()
                             colls = Collection.List()
                         }) {
                             Image(systemName: "trash")
                         }
-                        .disabled(fi.checkIsUsing(coll: coll))
+                        .disabled(isUsed)
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            newColl = true
-                        }) {
-                            Image(systemName: "plus")
-                        }
+            }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        newColl = true
+                    }) {
+                        Image(systemName: "plus")
                     }
                 }
             }

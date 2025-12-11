@@ -1,5 +1,4 @@
 import SwiftUI
-import FNIFIModule
 
 
 struct NewConnectionView : View {

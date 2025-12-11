@@ -1,6 +1,7 @@
 import SwiftUI
 import FNIFIModule
 
+
 struct AsyncImageView: View {
     let file: UnsafePointer<fnifi.file.File>
     @State private var url: URL? = nil

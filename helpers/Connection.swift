@@ -49,6 +49,9 @@ class Connection : Decodable, Encodable, ObservableObject {
         var actualKey = key
         if actualKey == "" {
             actualKey = "Connection-\(id)"
+        } else {
+            /* Delete from UserDefaults */
+            UserDefaults.standard.removeObject(forKey: actualKey)
         }
 
         /* Save in UserDefaults */
