@@ -17,10 +17,11 @@ class FNIFIWrapper : ObservableObject {
             id: UUID,
             indexing: UnsafeMutablePointer<fnifi.connection.IConnection>,
             storing: UnsafeMutablePointer<fnifi.connection.IConnection>,
+            maxCopiesSz: Int
         ) {
             self.id = id
             self.storing = fnifi.utils.SyncDirectory(storing, cachesPath)
-            self.coll = fnifi.file.Collection(indexing, &self.storing)
+            self.coll = fnifi.file.Collection(indexing, &self.storing, maxCopiesSz)
         }
     }
     
@@ -57,7 +58,7 @@ class FNIFIWrapper : ObservableObject {
         if let ind = coll.indexing.build() {
             if let stor = coll.storing.build() {
                 let index = self.colls.count
-                self.colls.append(CollectionPair(id: coll.id, indexing: ind, storing: stor))
+                self.colls.append(CollectionPair(id: coll.id, indexing: ind, storing: stor, maxCopiesSz: coll.maxCopiesSz))
                 self.fi!.addCollection(&self.colls[index].coll)
             }
         }

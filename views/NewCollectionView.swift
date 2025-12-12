@@ -1,4 +1,5 @@
 import SwiftUI
+internal import Combine
 
 
 struct NewCollectionView: View {
@@ -8,6 +9,8 @@ struct NewCollectionView: View {
     @State private var path = NavigationPath()
     @State private var name: String = ""
     @State private var tmpName: String = ""
+    @State private var maxCopiesSz: Int = 0
+    @State private var tmpmaxCopiesSz: String = ""
     private var onCollectionAdded: (() -> Void)?
     
     init(fi: FNIFIWrapper, onCollectionAdded: (() -> Void)? = nil) {
@@ -30,23 +33,34 @@ struct NewCollectionView: View {
                     List {
                         TextField("Name", text: $tmpName)
                             .disableAutocorrection(true)
-                            .navigationTitle("Name 3/3")
-                            .navigationSubtitle("Give it a name")
-                            .toolbar {
-                                ToolbarItem(placement: .confirmationAction) {
-                                    Button(action: {
-                                        name = tmpName
-                                    }) {
-                                        Image(systemName: "checkmark")
-                                    }
-                                    .disabled(tmpName.isEmpty)
+                        TextField("Local cache size (default to 1024000000 bytes)", text: $tmpmaxCopiesSz)
+                            .onReceive(Just(tmpmaxCopiesSz)) { newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if filtered != newValue {
+                                    tmpmaxCopiesSz = filtered
                                 }
                             }
+                            .disableAutocorrection(true)
+                    }
+                    .navigationTitle("Miscellaneous 3/4")
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(action: {
+                                name = tmpName
+                                maxCopiesSz = Int(tmpmaxCopiesSz) ?? 1024000000
+                                if (maxCopiesSz <= 0) {
+                                    maxCopiesSz = 1024000000
+                                }
+                            }) {
+                                Image(systemName: "checkmark")
+                            }
+                            .disabled(tmpName.isEmpty)
+                        }
                     }
                 } else {
-                    Text("Collection successfuly added!")
+                    Text("Collection being added...")
                         .task({
-                            let coll = Collection(indexing: indexing, storing: storing, name: name)
+                            let coll = Collection(indexing: indexing, storing: storing, name: name, maxCopiesSz: maxCopiesSz)
                             fi.use(coll: coll)
                             coll.save()
                             fi.updateFiles()

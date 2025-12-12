@@ -5,7 +5,7 @@ import Foundation
 
 struct Collection : Encodable, Decodable, Identifiable, Hashable {
     private enum CodingKeys: String, CodingKey {
-        case id, indexingId, storingId, name
+        case id, indexingId, storingId, name, maxCopiesSz
     }
 
     internal var id = UUID()
@@ -14,6 +14,7 @@ struct Collection : Encodable, Decodable, Identifiable, Hashable {
     let name: String
     let indexing: Connection
     let storing: Connection
+    let maxCopiesSz: Int
     
     init() {
         self.indexingId = UUID()
@@ -21,14 +22,16 @@ struct Collection : Encodable, Decodable, Identifiable, Hashable {
         self.name = ""
         self.indexing = Connection()
         self.storing = Connection()
+        self.maxCopiesSz = 0
     }
     
-    init(indexing: Connection, storing: Connection, name: String) {
+    init(indexing: Connection, storing: Connection, name: String, maxCopiesSz: Int) {
         self.indexing = indexing
         self.storing = storing
         self.indexingId = self.indexing.id
         self.storingId = self.storing.id
         self.name = name
+        self.maxCopiesSz = maxCopiesSz
     }
     
     init(from decoder: Decoder) throws {
@@ -37,6 +40,7 @@ struct Collection : Encodable, Decodable, Identifiable, Hashable {
         indexingId = try container.decode(UUID.self, forKey: .indexingId)
         storingId = try container.decode(UUID.self, forKey: .storingId)
         name = try container.decode(String.self, forKey: .name)
+        maxCopiesSz = try container.decode(Int.self, forKey: .maxCopiesSz)
         
         indexing = Connection.Get(id: indexingId)!
         storing = Connection.Get(id: storingId)!
@@ -48,6 +52,7 @@ struct Collection : Encodable, Decodable, Identifiable, Hashable {
         try container.encode(indexingId, forKey: .indexingId)
         try container.encode(storingId, forKey: .storingId)
         try container.encode(name, forKey: .name)
+        try container.encode(maxCopiesSz, forKey: .maxCopiesSz)
     }
     
     func save() {

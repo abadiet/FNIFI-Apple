@@ -18,10 +18,10 @@ class Connection : Decodable, Encodable, ObservableObject {
     var id = UUID()
     @Published var kind: Kind = Kind.None
     @Published var server: String = ""
-    var share: String = ""
-    var username: String = ""
-    var password: String = ""
-    var path: String = ""
+    @Published var share: String = ""
+    @Published var username: String = ""
+    @Published var password: String = ""
+    @Published var path: String = ""
     
     init() {}
     
