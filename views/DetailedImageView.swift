@@ -12,9 +12,7 @@ struct DetailedImageView: View {
         Group {
             if let url = url {
                 AsyncImage(url: url){ image in
-                    image
-                        .resizable()
-                        .scaledToFit()
+                    MovableImageView(image: image)
                 } placeholder: {
                     ZStack {
                         if let prevUrl = previewUrl {
