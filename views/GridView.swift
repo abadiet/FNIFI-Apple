@@ -24,36 +24,39 @@ struct GridView: View {
     
     var body: some View {
         GeometryReader { geo in
-            let size = abs(geo.size.width - (CGFloat(nColumns - 1) * spacing)) / CGFloat(nColumns)  /* abs to avoid a warning */
-            ScrollView {
-                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: spacing), count: nColumns), spacing: spacing) {
-                    ForEach(0..<nPlaceHolders, id: \.self) { _ in
-                        Text("")
-                            .frame(width: size, height: size)
+            if files.isEmpty {
+                Image(systemName: "photo.stack")
+                    .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
+                    .font(.largeTitle)
+            } else {
+                let size = abs(geo.size.width - (CGFloat(nColumns - 1) * spacing)) / CGFloat(nColumns)  /* abs to avoid a warning */
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: spacing), count: nColumns), spacing: spacing) {
+                        ForEach(0..<nPlaceHolders, id: \.self) { _ in
+                            Color.clear
+                                .frame(width: size, height: size)
+                        }
+                        ForEach(files) { file in
+                            ImageView(file: file, isDetailedViewActive: $isDetailedViewActive)
+                                .frame(width: size, height: size)
+                                .cornerRadius(radius)
+                        }
                     }
-                    ForEach(files) { file in
-                        ImageView(file: file, isDetailedViewActive: $isDetailedViewActive)
-                            .frame(width: size, height: size)
-                            .cornerRadius(radius)
-                    }
-                    if files.isEmpty {
-                        Text("Nothing to display")
+                    .scrollTargetLayout()
+                }
+                .scrollPosition($position)
+                .onChange(of: isDetailedViewActive) {
+                    if !isDetailedViewActive {
+                        if let id = lastId {
+                            position.scrollTo(id: id)
+                        }
+                    } else {
+                        lastId = position.viewID(type: File.ID.self)
                     }
                 }
-                .scrollTargetLayout()
-            }
-            .scrollPosition($position)
-            .onChange(of: isDetailedViewActive) {
-                if !isDetailedViewActive {
-                    if let id = lastId {
-                        position.scrollTo(id: id)
-                    }
-                } else {
-                    lastId = position.viewID(type: File.ID.self)
+                .onAppear {
+                    position.scrollTo(edge: .bottom)
                 }
-            }
-            .onAppear {
-                position.scrollTo(edge: .bottom)
             }
         }
         .gesture(

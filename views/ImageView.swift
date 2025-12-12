@@ -16,25 +16,15 @@ struct ImageView: View {
                         .resizable()
                         .scaledToFill()
                 } placeholder: {
-                    if showStatus {
-                        Image(systemName: "questionmark")
-                    }
-                }
-                .task {
-                    try? await Task.sleep(nanoseconds: 500_000_000)
-                    showStatus = true
+                    Image(systemName: "questionmark")
                 }
             } else {
-                if showStatus {
-                    ProgressView()
-                }
+                ProgressView()
             }
         }
         .buttonStyle(.borderless)
         .task {
             await loadImage()
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            showStatus = true
         }
     }
 
@@ -43,7 +33,6 @@ struct ImageView: View {
             let theUrl = await URL(fileURLWithPath: String(self.file.getLocalPreviewPath()))
             await MainActor.run {
                 url = theUrl
-                showStatus = false
             }
         }.value
     }

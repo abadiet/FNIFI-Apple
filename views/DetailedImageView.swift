@@ -7,7 +7,6 @@ struct DetailedImageView: View {
     let previewUrl: URL?
     @Binding var isActive: Bool
     @State private var url: URL? = nil
-    @State private var showStatus = false
 
     var body: some View {
         Group {
@@ -26,13 +25,7 @@ struct DetailedImageView: View {
                             } placeholder: {
                             }
                         }
-                        if showStatus {
-                            Image(systemName: "questionmark")
-                        }
-                    }
-                    .task {
-                        try? await Task.sleep(nanoseconds: 500_000_000)
-                        showStatus = true
+                        Image(systemName: "questionmark")
                     }
                 }
             } else {
@@ -45,13 +38,7 @@ struct DetailedImageView: View {
                         } placeholder: {
                         }
                     }
-                    if showStatus {
-                        ProgressView()
-                    }
-                }
-                .task {
-                    try? await Task.sleep(nanoseconds: 500_000_000)
-                    showStatus = true
+                    ProgressView()
                 }
             }
         }
@@ -72,7 +59,6 @@ struct DetailedImageView: View {
         await Task.detached(priority: .background) {
             let theUrl = await URL(fileURLWithPath: String(self.file.getLocalCopyPath()))
             await MainActor.run {
-                showStatus = false
                 url = theUrl
             }
         }.value
