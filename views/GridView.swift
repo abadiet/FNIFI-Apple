@@ -1,10 +1,14 @@
 import SwiftUI
 import FNIFIModule
 
+
 struct GridView: View {
-    @Binding var files: [UnsafePointer<fnifi.file.File>]
+    @Binding var files: [File]
     @State private var zoom: CGFloat = 3.0
     @State private var NColumns: Int = 5
+    @State private var isDetailedViewActive = false
+    @State private var position = ScrollPosition(idType: File.ID.self)
+    @State var lastId: File.ID? = nil
     let minZoom: CGFloat = 1.0
     let maxZoom: CGFloat = 5.0
     let NColumnsMaxZoom: Int = 20
@@ -12,27 +16,34 @@ struct GridView: View {
     let spacing: CGFloat = 1.5
     
     var body: some View {
-        ScrollViewReader { scro in
-            GeometryReader { geo in
-                let size = abs(geo.size.width - (CGFloat(NColumns - 1) * spacing)) / CGFloat(NColumns)  /* abs to avoid a warning */
-                ScrollView {
-                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: spacing), count: NColumns), spacing: spacing) {
-                        ForEach(files, id: \.self) { file in
-                            ImageView(file: file)
-                                .frame(width: size, height: size)
-                                .cornerRadius(radius)
-                                .rotationEffect(.radians(.pi))
-                                .scaleEffect(x: -1, y: 1, anchor: .center)
-                        }
-                    }
-                    .rotationEffect(.radians(.pi))
-                    .scaleEffect(x: -1, y: 1, anchor: .center)
-                }
-                .onAppear {
-                    if let first = files.first {
-                        scro.scrollTo(first, anchor: .bottom)
+        GeometryReader { geo in
+            let size = abs(geo.size.width - (CGFloat(NColumns - 1) * spacing)) / CGFloat(NColumns)  /* abs to avoid a warning */
+            ScrollView {
+                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: spacing), count: NColumns), spacing: spacing) {
+                    ForEach(files) { file in
+                        ImageView(file: file, isDetailedViewActive: $isDetailedViewActive)
+                            .frame(width: size, height: size)
+                            .cornerRadius(radius)
+                            .rotationEffect(.radians(.pi))
+                            .scaleEffect(x: -1, y: 1, anchor: .center)
                     }
                 }
+                .scrollTargetLayout()
+            }
+            .rotationEffect(.radians(.pi))
+            .scaleEffect(x: -1, y: 1, anchor: .center)
+            .scrollPosition($position, anchor: .center)
+            .onChange(of: isDetailedViewActive) {
+                if !isDetailedViewActive {
+                    if let id = lastId {
+                        position.scrollTo(id: id)
+                    }
+                } else {
+                    lastId = position.viewID(type: File.ID.self)
+                }
+            }
+            .onAppear {
+                position.scrollTo(edge: .top)
             }
         }
         .gesture(

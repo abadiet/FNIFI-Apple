@@ -13,11 +13,21 @@ struct ContentView: View {
         if (fi.isSetup) {
             NavigationSplitView {
                 List(selection: $menu) {
-                    NavigationLink("Grid", value: Menu.grid)
-                    NavigationLink("Collections", value: Menu.collections)
-                    NavigationLink("Sort", value: Menu.sort)
-                    NavigationLink("Filter", value: Menu.filter)
-                    NavigationLink("Settings", value: Menu.settings)
+                    NavigationLink(value: Menu.grid) {
+                        Label("Grid", systemImage: "photo.on.rectangle")
+                    }
+                    NavigationLink(value: Menu.collections) {
+                        Label("Collections", systemImage: "rectangle.stack")
+                    }
+                    NavigationLink(value: Menu.sort) {
+                        Label("Sort", systemImage: "list.dash")
+                    }
+                    NavigationLink(value: Menu.filter) {
+                        Label("Filter", systemImage: "line.3.horizontal.decrease")
+                    }
+                    NavigationLink(value: Menu.settings) {
+                        Label("Settings", systemImage: "gear")
+                    }
                 }
             } detail: {
                 NavigationStack {

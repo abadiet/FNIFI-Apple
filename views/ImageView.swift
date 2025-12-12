@@ -3,12 +3,13 @@ import FNIFIModule
 
 
 struct ImageView: View {
-    let file: UnsafePointer<fnifi.file.File>
+    let file: File
+    @Binding var isDetailedViewActive: Bool
     @State private var url: URL? = nil
     @State private var showStatus: Bool = false
 
     var body: some View {
-        NavigationLink(destination: DetailedImageView(file: file, previewUrl: url)) {
+        NavigationLink(destination: DetailedImageView(file: file, previewUrl: url, isActive: $isDetailedViewActive)) {
             if let url = url {
                 AsyncImage(url: url){ image in
                     image
@@ -39,7 +40,7 @@ struct ImageView: View {
 
     private func loadImage() async {
         await Task.detached(priority: .background) {
-            let theUrl = await URL(fileURLWithPath: String(self.file.pointee.getLocalPreviewPath()))
+            let theUrl = await URL(fileURLWithPath: String(self.file.getLocalPreviewPath()))
             await MainActor.run {
                 url = theUrl
                 showStatus = false

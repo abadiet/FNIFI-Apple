@@ -3,8 +3,9 @@ import FNIFIModule
 
 
 struct DetailedImageView: View {
-    let file: UnsafePointer<fnifi.file.File>
+    let file: File
     let previewUrl: URL?
+    @Binding var isActive: Bool
     @State private var url: URL? = nil
     @State private var showStatus = false
 
@@ -59,11 +60,17 @@ struct DetailedImageView: View {
         .task {
             await loadImage()
         }
+        .onAppear {
+            isActive = true
+        }
+        .onDisappear() {
+            isActive = false
+        }
     }
 
     private func loadImage() async {
         await Task.detached(priority: .background) {
-            let theUrl = await URL(fileURLWithPath: String(self.file.pointee.getLocalCopyPath()))
+            let theUrl = await URL(fileURLWithPath: String(self.file.getLocalCopyPath()))
             await MainActor.run {
                 showStatus = false
                 url = theUrl

@@ -9,8 +9,8 @@ struct FilterExpr : Encodable, Decodable, Identifiable, ExpressionProtocol {
 
     static let className: String = "Filter"
     var id = UUID()
-    @State var name: String = ""
-    @State var expression: String = ""
+    var name: String = ""
+    var expression: String = ""
     
     init() {}
     

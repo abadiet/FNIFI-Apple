@@ -29,7 +29,7 @@ class FNIFIWrapper : ObservableObject {
     private var fi: fnifi.FNIFI?
     private var storing: fnifi.utils.SyncDirectory?
     private var colls = [CollectionPair]()
-    @Published var files = [UnsafePointer<fnifi.file.File>]()
+    @Published var files = [File]()
     private var sortExpr: String = ""
     private var filterExpr: String = ""
     
@@ -89,7 +89,9 @@ class FNIFIWrapper : ObservableObject {
     func updateFiles() {
         self.files.removeAll()
         self.fi!.getFiles().forEach({ file in
-            self.files.append(file!)
+            if let f = file {
+                self.files.append(File(file: f))
+            }
         })
     }
     
