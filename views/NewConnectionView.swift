@@ -16,7 +16,7 @@ struct NewConnectionView : View {
                 List {
                     Text("Tips:\n- Documents: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path())\n- Downloads: \(FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.path())\n- Desktop: \(FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!.path())\n- Movies: \(FileManager.default.urls(for: .moviesDirectory, in: .userDomainMask).first!.path())\n- Music: \(FileManager.default.urls(for: .musicDirectory, in: .userDomainMask).first!.path())\n- Pictures: \(FileManager.default.urls(for: .picturesDirectory, in: .userDomainMask).first!.path())")
                     TextField("Path", text: $connection.path)
-                        .disableAutocorrection(true)
+                        .autocorrectionDisabled()
                 }
                 .navigationTitle("Local")
                 .toolbar {
@@ -32,13 +32,13 @@ struct NewConnectionView : View {
             case Connection.Kind.SMB:
                 List {
                     TextField("Server Address", text: $connection.server)
-                        .disableAutocorrection(true)
+                        .autocorrectionDisabled()
                     TextField("Share Name", text: $connection.share)
-                        .disableAutocorrection(true)
+                        .autocorrectionDisabled()
                     TextField("Path", text: $connection.path)
-                        .disableAutocorrection(true)
+                        .autocorrectionDisabled()
                     TextField("Username", text: $connection.username)
-                        .disableAutocorrection(true)
+                        .autocorrectionDisabled()
                     SecureField("Password", text: $connection.password)
                 }
                 .navigationTitle("SMB")

@@ -32,7 +32,7 @@ struct NewCollectionView: View {
                 } else if (name == "") {
                     List {
                         TextField("Name", text: $tmpName)
-                            .disableAutocorrection(true)
+                            .autocorrectionDisabled()
                         TextField("Local cache size (default to 1024000000 bytes)", text: $tmpmaxCopiesSz)
                             .onReceive(Just(tmpmaxCopiesSz)) { newValue in
                                 let filtered = newValue.filter { "0123456789".contains($0) }
@@ -40,7 +40,7 @@ struct NewCollectionView: View {
                                     tmpmaxCopiesSz = filtered
                                 }
                             }
-                            .disableAutocorrection(true)
+                            .autocorrectionDisabled()
                     }
                     .navigationTitle("Miscellaneous 3/4")
                     .toolbar {

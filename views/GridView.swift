@@ -5,34 +5,44 @@ import FNIFIModule
 struct GridView: View {
     @Binding var files: [File]
     @State private var zoom: CGFloat = 3.0
-    @State private var NColumns: Int = 5
+    @State private var nColumns: Int = 5
+    private var nPlaceHolders: Int {
+        let nLastRow = (files.count % nColumns)
+        if nLastRow > 0 {
+            return nColumns - nLastRow
+        }
+        return 0
+    }
     @State private var isDetailedViewActive = false
     @State private var position = ScrollPosition(idType: File.ID.self)
     @State var lastId: File.ID? = nil
     let minZoom: CGFloat = 1.0
     let maxZoom: CGFloat = 5.0
-    let NColumnsMaxZoom: Int = 20
+    let nColumnsMaxZoom: Int = 20
     let radius: CGFloat = 1.5
     let spacing: CGFloat = 1.5
     
     var body: some View {
         GeometryReader { geo in
-            let size = abs(geo.size.width - (CGFloat(NColumns - 1) * spacing)) / CGFloat(NColumns)  /* abs to avoid a warning */
+            let size = abs(geo.size.width - (CGFloat(nColumns - 1) * spacing)) / CGFloat(nColumns)  /* abs to avoid a warning */
             ScrollView {
-                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: spacing), count: NColumns), spacing: spacing) {
+                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: spacing), count: nColumns), spacing: spacing) {
+                    ForEach(0..<nPlaceHolders, id: \.self) { _ in
+                        Text("")
+                            .frame(width: size, height: size)
+                    }
                     ForEach(files) { file in
                         ImageView(file: file, isDetailedViewActive: $isDetailedViewActive)
                             .frame(width: size, height: size)
                             .cornerRadius(radius)
-                            .rotationEffect(.radians(.pi))
-                            .scaleEffect(x: -1, y: 1, anchor: .center)
+                    }
+                    if files.isEmpty {
+                        Text("Nothing to display")
                     }
                 }
                 .scrollTargetLayout()
             }
-            .rotationEffect(.radians(.pi))
-            .scaleEffect(x: -1, y: 1, anchor: .center)
-            .scrollPosition($position, anchor: .center)
+            .scrollPosition($position)
             .onChange(of: isDetailedViewActive) {
                 if !isDetailedViewActive {
                     if let id = lastId {
@@ -43,7 +53,7 @@ struct GridView: View {
                 }
             }
             .onAppear {
-                position.scrollTo(edge: .top)
+                position.scrollTo(edge: .bottom)
             }
         }
         .gesture(
@@ -96,9 +106,9 @@ struct GridView: View {
 
     private func updateColumns() {
         if (zoom <= 1.0) {
-            NColumns = NColumnsMaxZoom
+            nColumns = nColumnsMaxZoom
         } else {
-            NColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 1
+            nColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 1
         }
     }
 }

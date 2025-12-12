@@ -43,15 +43,12 @@ struct ContentView: View {
                     case .settings:
                         SettingsView(fi: fi)
                     case .none:
-                        Text("Select an entry in the menu")
+                        EmptyView()
                     }
                 }
             }
         } else {
-            NavigationSplitView {
-            } detail: {
-                FNIFISetupView(fi: fi)
-            }
+            FNIFISetupView(fi: fi)
         }
     }
 }

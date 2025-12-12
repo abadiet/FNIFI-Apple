@@ -93,6 +93,7 @@ class FNIFIWrapper : ObservableObject {
                 self.files.append(File(file: f))
             }
         })
+        self.files.reverse()
     }
     
     func checkIsUsing(coll: Collection) -> Bool {
