@@ -40,8 +40,6 @@ struct DetailedImageView: View {
                 }
             }
         }
-        .toolbarBackgroundVisibility(.hidden, for: .automatic)
-        .navigationTitle("")
         .task {
             await loadImage()
         }
@@ -51,6 +49,8 @@ struct DetailedImageView: View {
         .onDisappear() {
             isActive = false
         }
+        .toolbarBackgroundVisibility(.hidden, for: .automatic)
+        .navigationTitle("")
     }
 
     private func loadImage() async {

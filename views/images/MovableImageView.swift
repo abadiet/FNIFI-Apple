@@ -10,6 +10,7 @@ struct MovableImageView: View {
     @State private var lastOffset: CGSize = .zero
     @State private var initImgHalfSz: CGSize = .zero
     @State private var touchLocation: CGPoint = .zero
+    @GestureState private var magnifyBy = 1.0
 
     var body: some View {
         GeometryReader { geometry in
@@ -36,12 +37,12 @@ struct MovableImageView: View {
                 .frame(width: geometry.size.width, height: geometry.size.height)
                 .clipped()
                 .gesture(
-                    MagnificationGesture(minimumScaleDelta: 0)
+                    MagnifyGesture()
                         .onChanged({ value in
                             withAnimation(.interactiveSpring()) {
-                                scale = lastScale + value - 1.0
-                                offset.width = lastOffset.width * scale / lastScale
-                                offset.height = lastOffset.height * scale / lastScale
+                                scale = lastScale + value.magnification - 1.0
+                                offset.width = (lastOffset.width + (containerHalfSz.width - value.startLocation.x)) * scale / lastScale
+                                offset.height = (lastOffset.height + (containerHalfSz.height - value.startLocation.y)) * scale / lastScale
                             }
                         })
                         .onEnded({ _ in
