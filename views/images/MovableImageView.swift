@@ -40,6 +40,8 @@ struct MovableImageView: View {
                         .onChanged({ value in
                             withAnimation(.interactiveSpring()) {
                                 scale = lastScale + value - 1.0
+                                offset.width = lastOffset.width * scale / lastScale
+                                offset.height = lastOffset.height * scale / lastScale
                             }
                         })
                         .onEnded({ _ in
