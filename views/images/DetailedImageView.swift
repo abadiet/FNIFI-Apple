@@ -1,5 +1,6 @@
 import SwiftUI
 import FNIFIModule
+import WebKit
 
 
 struct DetailedImageView: View {
@@ -10,13 +11,13 @@ struct DetailedImageView: View {
 
     var body: some View {
         Group {
-            if let url = url {
+            if let url {
                 AsyncImage(url: url){ image in
                     MovableImageView(image: image)
                 } placeholder: {
                     ZStack {
-                        if let prevUrl = previewUrl {
-                            AsyncImage(url: prevUrl) { image in
+                        if let previewUrl {
+                            AsyncImage(url: previewUrl) { image in
                                 image
                                     .resizable()
                                     .scaledToFit()
@@ -28,8 +29,8 @@ struct DetailedImageView: View {
                 }
             } else {
                 ZStack {
-                    if let prevUrl = previewUrl {
-                        AsyncImage(url: prevUrl) { image in
+                    if let previewUrl {
+                        AsyncImage(url: previewUrl) { image in
                             image
                                 .resizable()
                                 .scaledToFit()
@@ -41,7 +42,7 @@ struct DetailedImageView: View {
             }
         }
         .task {
-            await loadImage()
+            self.url = URL(fileURLWithPath: String(self.file.getLocalCopyPath()))
         }
         .onAppear {
             isActive = true
@@ -51,14 +52,5 @@ struct DetailedImageView: View {
         }
         .toolbarBackgroundVisibility(.hidden, for: .automatic)
         .navigationTitle("")
-    }
-
-    private func loadImage() async {
-        await Task.detached(priority: .background) {
-            let theUrl = await URL(fileURLWithPath: String(self.file.getLocalCopyPath()))
-            await MainActor.run {
-                url = theUrl
-            }
-        }.value
     }
 }

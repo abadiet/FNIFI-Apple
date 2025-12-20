@@ -10,7 +10,7 @@ struct ImageView: View {
 
     var body: some View {
         NavigationLink(destination: DetailedImageView(file: file, previewUrl: url, isActive: $isDetailedViewActive)) {
-            if let url = url {
+            if let url {
                 AsyncImage(url: url){ image in
                     image
                         .resizable()
@@ -24,16 +24,7 @@ struct ImageView: View {
         }
         .buttonStyle(.borderless)
         .task {
-            await loadImage()
+            self.url = URL(fileURLWithPath: self.file.getLocalPreviewPath())
         }
-    }
-
-    private func loadImage() async {
-        await Task.detached(priority: .background) {
-            let theUrl = await URL(fileURLWithPath: String(self.file.getLocalPreviewPath()))
-            await MainActor.run {
-                url = theUrl
-            }
-        }.value
     }
 }

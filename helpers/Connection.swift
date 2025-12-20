@@ -83,12 +83,12 @@ class Connection : Decodable, Encodable, ObservableObject {
         switch (kind) {
         case Kind.Local:
             return fnifi.connection.ConnectionBuilder.GetLocal(
-                fnifi.connection.ConnectionBuilder.Options.init(relativePath: std.string(path))
+                fnifi.connection.ConnectionBuilder.Options.init(relativePath: std.string(path), maxConnectionTry: 0)
             )
         case Kind.SMB:
             return fnifi.connection.ConnectionBuilder.GetSMB(
                 std.string(server), std.string(share), std.string(username), std.string(password),
-                fnifi.connection.ConnectionBuilder.Options.init(relativePath: std.string(path))
+                fnifi.connection.ConnectionBuilder.Options.init(relativePath: std.string(path), maxConnectionTry: 3)
             )
         case Kind.None:
             return nil

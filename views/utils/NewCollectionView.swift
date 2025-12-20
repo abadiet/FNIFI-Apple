@@ -63,7 +63,6 @@ struct NewCollectionView: View {
                             let coll = Collection(indexing: indexing, storing: storing, name: name, maxCopiesSz: maxCopiesSz)
                             fi.use(coll: coll)
                             coll.save()
-                            fi.updateFiles()
                             onCollectionAdded?()
                         })
                 }

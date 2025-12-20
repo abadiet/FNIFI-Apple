@@ -20,7 +20,6 @@ struct CollectionsView: View {
                     HStack {
                         Button(action: {
                             fi.use(coll: coll)
-                            fi.updateFiles()
                         }) {
                             Text(coll.name)
                         }

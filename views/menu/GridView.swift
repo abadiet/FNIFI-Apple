@@ -47,8 +47,8 @@ struct GridView: View {
                 .scrollPosition($position)
                 .onChange(of: isDetailedViewActive) {
                     if !isDetailedViewActive {
-                        if let id = lastId {
-                            position.scrollTo(id: id)
+                        if let lastId {
+                            position.scrollTo(id: lastId)
                         }
                     } else {
                         lastId = position.viewID(type: File.ID.self)

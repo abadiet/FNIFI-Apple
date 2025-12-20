@@ -3,8 +3,8 @@ import SwiftUI
 import CxxStdlib
 internal import Combine
 
-
-let cachesPath = std.string(FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.path())
+let fileMngr = FileManager.default
+let cachesURL = fileMngr.urls(for: .cachesDirectory, in: .userDomainMask).first!
 let appID: String = "eu.tabadie.FNIFI-Apple"
 
 class FNIFIWrapper : ObservableObject {
@@ -20,7 +20,7 @@ class FNIFIWrapper : ObservableObject {
             maxCopiesSz: Int
         ) {
             self.id = id
-            self.storing = fnifi.utils.SyncDirectory(storing, cachesPath)
+            self.storing = fnifi.utils.SyncDirectory(storing, std.string(cachesURL.path()))
             self.coll = fnifi.file.Collection(indexing, &self.storing, maxCopiesSz)
         }
     }
@@ -47,10 +47,21 @@ class FNIFIWrapper : ObservableObject {
             self.files.removeAll()
             self.sortExpr = ""
             self.filterExpr = ""
-            self.storing = fnifi.utils.SyncDirectory(stor, cachesPath)
+            self.storing = fnifi.utils.SyncDirectory(stor, std.string(cachesURL.path()))
             self.fi = fnifi.FNIFI(&self.storing!)
             updateFiles()
             isSetup = true
+        }
+    }
+    
+    func clearCache() {
+        do {
+            let contents = try fileMngr.contentsOfDirectory(at: cachesURL, includingPropertiesForKeys: nil)
+            for item in contents {
+                try fileMngr.removeItem(at: item)
+            }
+        } catch {
+            print("Error clearing caches directory: \(error.localizedDescription)")
         }
     }
 
@@ -60,8 +71,14 @@ class FNIFIWrapper : ObservableObject {
                 let index = self.colls.count
                 self.colls.append(CollectionPair(id: coll.id, indexing: ind, storing: stor, maxCopiesSz: coll.maxCopiesSz))
                 self.fi!.addCollection(&self.colls[index].coll)
+                updateFiles()
             }
         }
+    }
+    
+    func index() {
+        self.fi?.index()
+        updateFiles()
     }
 
     func sort(expr: String) {
