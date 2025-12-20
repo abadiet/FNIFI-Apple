@@ -12,19 +12,23 @@ struct DetailedImageView: View {
     var body: some View {
         Group {
             if let url {
-                AsyncImage(url: url){ image in
-                    MovableImageView(image: image)
-                } placeholder: {
-                    ZStack {
-                        if let previewUrl {
-                            AsyncImage(url: previewUrl) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                            } placeholder: {
+                if file.getKind() == .GIF {
+                    GifView(url: url)
+                } else {
+                    AsyncImage(url: url){ image in
+                        MovableImageView(image: image)
+                    } placeholder: {
+                        ZStack {
+                            if let previewUrl {
+                                AsyncImage(url: previewUrl) { image in
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                } placeholder: {
+                                }
                             }
+                            Image(systemName: "questionmark")
                         }
-                        Image(systemName: "questionmark")
                     }
                 }
             } else {
