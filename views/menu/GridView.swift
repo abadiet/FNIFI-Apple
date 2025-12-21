@@ -37,8 +37,7 @@ struct GridView: View {
                                 .frame(width: size, height: size)
                         }
                         ForEach(files) { file in
-                            ImageView(file: file, isDetailedViewActive: $isDetailedViewActive)
-                                .frame(width: size, height: size)
+                            PreviewView(file: file, width: size, height: size, isDetailedViewActive: $isDetailedViewActive)
                                 .cornerRadius(radius)
                         }
                     }

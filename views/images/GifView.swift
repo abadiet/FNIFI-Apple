@@ -8,7 +8,10 @@ struct GifView: View {
     var body: some View {
         Group {
             if let image {
-                MovableImageView(image: image)
+                MovableView {
+                    image
+                        .resizable()
+                }
             } else {
                 ProgressView()
             }

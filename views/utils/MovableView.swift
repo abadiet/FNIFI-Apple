@@ -2,8 +2,8 @@ import SwiftUI
 import FNIFIModule
 
 
-struct MovableImageView: View {
-    let image: Image
+struct MovableView<Content: View>: View {
+    let content: Content
     @State private var scale = 1.0
     @State private var lastScale = 1.0
     @State private var offset: CGSize = .zero
@@ -11,6 +11,10 @@ struct MovableImageView: View {
     @State private var initImgHalfSz: CGSize = .zero
     @State private var touchLocation: CGPoint = .zero
     @GestureState private var magnifyBy = 1.0
+    
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -18,8 +22,7 @@ struct MovableImageView: View {
                 width: geometry.size.width / 2.0,
                 height: geometry.size.height / 2.0,
             )
-            image
-                .resizable()
+            content
                 .scaleEffect(scale)
                 .offset(offset)
                 .scaledToFit()

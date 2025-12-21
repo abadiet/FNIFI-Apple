@@ -1,4 +1,4 @@
-# FNIFI-Apple - MacOS/IOS/VisionOS/TVOS
+# FNIFI-Apple - MacOS/iOS/VisionOS/TVOS
 Apple's Photos application but with added connectivity, filtering and sorting algorithms.
     
 > [!INFORMATION]
@@ -6,7 +6,7 @@ Apple's Photos application but with added connectivity, filtering and sorting al
 
 ## Building
 
-To build the application, you need to change several XCode settings as well as compiling the [FNIFI](https://github.com/abadiet/FNIFI) library.
+To build the application, you need to change several XCode settings, link with [VLCLib](https://github.com/videolan/vlckit) and build the [FNIFI](https://github.com/abadiet/FNIFI) library.
 Unfortunately, mixing a C++ library with Swift/Objective-C++ code is not easy, but the funniest is when you add cross-compilation... I wish you good luck.
 [Here](https://github.com/abadiet/FNIFI-Apple/blob/main/dependencies/build-fnifi.sh) is how I did (still not sure this was the proper way) for **compiling the application for MacOS arm64 and IOS arm64 architectures**.
 Let's detailed the process a bit.
@@ -18,6 +18,17 @@ Let's detailed the process a bit.
 - Search Paths > Header Search Paths
 - Search Paths > Library Search Paths
 - Linking General > Other Linker Flags
+
+### Link with VLCLib
+Follow [VLCLib](https://github.com/videolan/vlckit)'s instructions (using either Cocoapods or Carthage).
+If you don't mind using these, you can still compile it from source:
+```bash
+git clone https://github.com/videolan/vlckit
+cd vlckit
+./compileAndBuildVLCKit.sh -r -x -a aarch64  # MacOS arm64
+./compileAndBuildVLCKit.sh -r -a aarch64  # IOS arm64
+```
+This will produce some VLCKit.xcframework that should be added to the XCode project.
 
 ### Single architecture without cross-compilation
 *Assuming you have OpenCV, Exiv2, CMake and XCode installed*
