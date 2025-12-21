@@ -39,6 +39,7 @@ final class ControllerHolder {
     var controller: VLCViewController?
 }
 
+#if os(macOS)
 struct VLCControllerRepresentable: NSViewControllerRepresentable {
     class Coordinator: VLCViewControllerDelegate {
         var parent: VLCControllerRepresentable
@@ -80,3 +81,48 @@ struct VLCControllerRepresentable: NSViewControllerRepresentable {
         Coordinator(parent: self)
     }
 }
+#endif
+
+#if os(iOS)
+struct VLCControllerRepresentable: UIViewControllerRepresentable {
+    class Coordinator: VLCViewControllerDelegate {
+        var parent: VLCControllerRepresentable
+
+        init(parent: VLCControllerRepresentable) {
+            self.parent = parent
+        }
+
+        func play() {
+            parent.holder.controller?.player.play()
+        }
+
+        func pause() {
+            parent.holder.controller?.player.pause()
+        }
+        
+        func jump(progress: Double) {
+            parent.holder.controller?.player.position = progress
+        }
+        
+        func getRemainingTime() -> VLCTime? {
+            return parent.holder.controller?.player.remainingTime
+        }
+    }
+
+    let url: URL
+    private let holder = ControllerHolder()
+
+    func makeUIViewController(context: Context) -> VLCViewController {
+        let controller = VLCViewController(url: url)
+        controller.delegate = context.coordinator
+        self.holder.controller = controller
+        return controller
+    }
+
+    func updateUIViewController(_ nsViewController: VLCViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+}
+#endif
