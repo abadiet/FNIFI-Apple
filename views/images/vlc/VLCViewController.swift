@@ -3,8 +3,9 @@ import VLCKit
 
 class VLCViewController: NSViewController {
     let url: URL
-    private var player: VLCMediaPlayer!
-    
+    var player: VLCMediaPlayer!
+    weak var delegate: VLCViewControllerDelegate?
+
     init(url: URL) {
         self.url = url
         super.init(nibName: nil, bundle: nil)
@@ -22,19 +23,7 @@ class VLCViewController: NSViewController {
         player.drawable = self.view
         player.play()
     }
-    
-    @IBAction func playButtonClicked(_ sender: NSButton) {
-        player.play()
-    }
 
-    @IBAction func pauseButtonClicked(_ sender: NSButton) {
-        player.pause()
-    }
-
-    @IBAction func stopButtonClicked(_ sender: NSButton) {
-        player.stop()
-    }
-    
     deinit {
         player.stop()
     }

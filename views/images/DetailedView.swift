@@ -45,7 +45,15 @@ struct DetailedView: View {
                         }
                     }
                 case .UNKNOWN:
-                    Image(systemName: "questionmark")
+                    ZStack {
+                        AsyncImage(url: previewUrl) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                        } placeholder: {
+                        }
+                        Image(systemName: "questionmark")
+                    }
                 }
             } else {
                 ZStack {
