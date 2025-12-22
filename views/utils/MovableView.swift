@@ -72,7 +72,7 @@ struct MovableView<Content: View>: View {
                         )
                         .simultaneously(
                             with: TapGesture(count: 2)
-                                .onEnded({ location in
+                                .onEnded({ _ in
                                     withAnimation(.easeOut(duration: 0.2)) {
                                         if (scale >= 2.0) {
                                             scale = 1.0

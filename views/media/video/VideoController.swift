@@ -1,11 +1,13 @@
 import VLCKit
+import SwiftUI
+
 
 #if os(macOS)
-class VLCViewController: NSViewController {
+class VideoController: NSViewController {
     let url: URL
     var player: VLCMediaPlayer!
-    weak var delegate: VLCViewControllerDelegate?
-
+    weak var delegate: VideoControllerDelegate?
+    
     init(url: URL) {
         self.url = url
         super.init(nibName: nil, bundle: nil)
@@ -31,10 +33,10 @@ class VLCViewController: NSViewController {
 #endif
 
 #if os(iOS)
-class VLCViewController: UIViewController {
+class VideoController: UIViewController {
     let url: URL
     var player: VLCMediaPlayer!
-    weak var delegate: VLCViewControllerDelegate?
+    weak var delegate: VideoControllerDelegate?
 
     init(url: URL) {
         self.url = url

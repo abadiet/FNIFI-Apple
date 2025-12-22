@@ -8,7 +8,6 @@ struct DetailedView: View {
     let previewUrl: URL
     @Binding var isActive: Bool
     @State private var url: URL? = nil
-    @State private var aspectRatio: CGFloat = 0
 
     var body: some View {
         Group {
@@ -35,15 +34,7 @@ struct DetailedView: View {
                 case .GIF:
                     GifView(url: url)
                 case .MKV, .AVI, .MTS, .MOV, .WMV, .YUV, .MP4, .M4V:
-                    GeometryReader { geo in
-                        MovableView {
-                            if aspectRatio > 1 {
-                                VideoView(url: url, width: geo.size.width, height: geo.size.width / aspectRatio)
-                            } else {
-                                VideoView(url: url, width: aspectRatio * geo.size.height, height: geo.size.height)
-                            }
-                        }
-                    }
+                    VideoView(url: url)
                 case .UNKNOWN:
                     ZStack {
                         AsyncImage(url: previewUrl) { image in
@@ -61,14 +52,6 @@ struct DetailedView: View {
                         image
                             .resizable()
                             .scaledToFit()
-                            .background(
-                                GeometryReader { geo in
-                                    Color.clear
-                                        .onAppear {
-                                            aspectRatio = geo.size.width / geo.size.height
-                                        }
-                                }
-                            )
                     } placeholder: {
                     }
                     ProgressView()

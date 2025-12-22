@@ -12,12 +12,13 @@ Unfortunately, mixing a C++ library with Swift/Objective-C++ code is not easy, b
 Let's detailed the process a bit.
 
 ### XCode settings to change
-- Swift Compiler - Language > C++ and Objective-C interop. = C++/Objective-C++
+- Build Settings > Swift Compiler - Language > C++ and Objective-C interop. = C++/Objective-C++
 - Signing - App Sandbox & Hardened Runtime > Disable Library Validation = YES
-- Signing - App Sandbox & Hardened Runtime > Outgoing Connections (Client) = YES
-- Search Paths > Header Search Paths
-- Search Paths > Library Search Paths
-- Linking General > Other Linker Flags
+- Build Settings >  Signing - App Sandbox & Hardened Runtime > Outgoing Connections (Client) = YES
+- Build Settings > Search Paths > Header Search Paths
+- Build Settings > Search Paths > Library Search Paths
+- Build Settings > Linking General > Other Linker Flags
+- (For iOS) General > Framework, Libraries and Embedded Contents > Embedded every frameworks
 
 ### Link with VLCLib
 Follow [VLCLib](https://github.com/videolan/vlckit)'s instructions (using either Cocoapods or Carthage).
