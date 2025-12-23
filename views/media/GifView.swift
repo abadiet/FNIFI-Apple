@@ -1,7 +1,7 @@
 import SwiftUI
 
 #if os(macOS)
-struct GifView: View {
+struct GIFView: View {
     let url: URL
     @State private var image: Image?
     

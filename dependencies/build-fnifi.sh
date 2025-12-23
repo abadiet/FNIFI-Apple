@@ -4,8 +4,8 @@ rm -rf fnifi.xcframework
 rm -rf libsmb2-macos.a
 rm -rf libsmb2-ios.a
 
-mkdir build
-cd build
+mkdir build-fnifi
+cd build-fnifi
 
 git clone --recurse-submodules -j$(sysctl -n hw.ncpu)                         \
     https://github.com/abadiet/FNIFI
@@ -58,4 +58,4 @@ mv ios/dependencies/libsmb2/lib/libsmb2.a ../libsmb2-ios.a
 mv ios-sim/dependencies/libsmb2/lib/libsmb2.a ../libsmb2-ios-sim.a
 
 cd ..
-rm -rf build
+rm -rf build-fnifi

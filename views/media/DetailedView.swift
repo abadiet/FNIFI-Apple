@@ -32,7 +32,7 @@ struct DetailedView: View {
                         }
                     }
                 case .GIF:
-                    GifView(url: url)
+                    GIFView(url: url)
                 case .MKV, .AVI, .MTS, .MOV, .WMV, .YUV, .MP4, .M4V:
                     VideoView(url: url)
                 case .UNKNOWN:
@@ -67,7 +67,5 @@ struct DetailedView: View {
         .onDisappear() {
             isActive = false
         }
-        .toolbarBackgroundVisibility(.hidden, for: .automatic)
-        .navigationTitle("")
     }
 }

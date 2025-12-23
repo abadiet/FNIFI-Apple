@@ -65,6 +65,7 @@ struct VideoView: View {
                             }
                         }
                     }
+
                 Color.clear  /* hack for blocking mouse events from the controller */
                     .contentShape(Rectangle())
                     .onTapGesture {}
