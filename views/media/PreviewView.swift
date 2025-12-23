@@ -6,23 +6,23 @@ struct PreviewView: View {
     let file: File
     let width: CGFloat
     let height: CGFloat
-    @Binding var isDetailedViewActive: Bool
+    @Binding var selectedFile: File?
     @State private var url: URL? = nil
-    @State private var showStatus: Bool = false
 
     var body: some View {
         Group {
             if let url {
-                NavigationLink(destination: DetailedView(file: file, previewUrl: url, isActive: $isDetailedViewActive)) {
+                Button(action: { selectedFile = file }) {
                     AsyncImage(url: url){ image in
                         image
                             .resizable()
                             .scaledToFill()
+                            .frame(width: width, height: height)
+                            .clipped()
                     } placeholder: {
                         Image(systemName: "questionmark")
+                            .frame(width: width, height: height)
                     }
-                    .frame(width: width, height: height)
-                    .clipped()
                 }
                 .buttonStyle(.borderless)
             } else {

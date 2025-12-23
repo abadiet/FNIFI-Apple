@@ -4,6 +4,7 @@ import FNIFIModule
 
 struct GridView: View {
     @Binding var files: [File]
+    @State private var selectedFile: File?
     @State private var zoom: CGFloat = 3.0
     @State private var nColumns: Int = 5
     private var nPlaceHolders: Int {
@@ -13,9 +14,7 @@ struct GridView: View {
         }
         return 0
     }
-    @State private var isDetailedViewActive = false
     @State private var position = ScrollPosition(idType: File.ID.self)
-    @State var lastId: File.ID? = nil
     let minZoom: CGFloat = 1.0
     let maxZoom: CGFloat = 5.0
     let nColumnsMaxZoom: Int = 20
@@ -29,32 +28,31 @@ struct GridView: View {
                     .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
                     .font(.largeTitle)
             } else {
-                let size = abs(geo.size.width - (CGFloat(nColumns - 1) * spacing)) / CGFloat(nColumns)  /* abs to avoid a warning */
-                ScrollView {
-                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: spacing), count: nColumns), spacing: spacing) {
-                        ForEach(0..<nPlaceHolders, id: \.self) { _ in
-                            Color.clear
-                                .frame(width: size, height: size)
-                        }
-                        ForEach(files) { file in
-                            PreviewView(file: file, width: size, height: size, isDetailedViewActive: $isDetailedViewActive)
-                                .cornerRadius(radius)
+                ZStack {
+                    let size = abs(geo.size.width - (CGFloat(nColumns - 1) * spacing)) / CGFloat(nColumns)  /* abs to avoid a warning */
+                    ScrollView {
+                        LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: spacing), count: nColumns), spacing: spacing) {
+                            ForEach(0..<nPlaceHolders, id: \.self) { _ in
+                                Color.clear
+                                    .frame(width: size, height: size)
+                            }
+                            ForEach(files) { file in
+                                PreviewView(file: file, width: size, height: size, selectedFile: $selectedFile)
+                                    .cornerRadius(radius)
+                            }
                         }
                     }
-                    .scrollTargetLayout()
-                }
-                .scrollPosition($position)
-                .onChange(of: isDetailedViewActive) {
-                    if !isDetailedViewActive {
-                        if let lastId {
-                            position.scrollTo(id: lastId)
-                        }
-                    } else {
-                        lastId = position.viewID(type: File.ID.self)
+                    .scrollPosition($position)
+                    .onAppear {
+                        position.scrollTo(edge: .bottom)
                     }
-                }
-                .onAppear {
-                    position.scrollTo(edge: .bottom)
+                    
+                    if selectedFile != nil {
+                        DetailedView(selectedFile: $selectedFile)
+                            .ignoresSafeArea(.all)
+                            .zIndex(1)
+                            .navigationBarBackButtonHidden(true)
+                    }
                 }
             }
         }
@@ -65,17 +63,19 @@ struct GridView: View {
                 })
         )
         .toolbar {
-            ToolbarItemGroup(placement: .automatic) {
-                Button(action: { zoomOut() }) {
-                    Image(systemName: "minus")
+            if selectedFile == nil {
+                ToolbarItemGroup(placement: .automatic) {
+                    Button(action: { zoomOut() }) {
+                        Image(systemName: "minus")
+                    }
+                    .help("Zoom Out")
+                    .keyboardShortcut("-", modifiers: .command)
+                    Button(action: { zoomIn() }) {
+                        Image(systemName: "plus")
+                    }
+                    .help("Zoom In")
+                    .keyboardShortcut("+", modifiers: .command)
                 }
-                .help("Zoom Out")
-                .keyboardShortcut("-", modifiers: .command)
-                Button(action: { zoomIn() }) {
-                    Image(systemName: "plus")
-                }
-                .help("Zoom In")
-                .keyboardShortcut("+", modifiers: .command)
             }
         }
         .toolbarBackgroundVisibility(.hidden, for: .automatic)

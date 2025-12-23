@@ -27,7 +27,7 @@ struct GIFView: View {
 #endif
 
 #if os(iOS)
-struct GifView: View {
+struct GIFView: View {
     let url: URL
     @State private var image: Image?
     
