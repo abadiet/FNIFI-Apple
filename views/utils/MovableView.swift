@@ -47,7 +47,6 @@ struct MovableView<Content: View>: View {
                                 if scale < 0 {
                                     scale = 0
                                 }
-                                print(value.magnification, lastScale, scale)
                                 offset.width = (lastOffset.width + (containerHalfSz.width - value.startLocation.x)) * scale / lastScale
                                 offset.height = (lastOffset.height + (containerHalfSz.height - value.startLocation.y)) * scale / lastScale
                             }

@@ -6,6 +6,7 @@ struct GridView: View {
     @Binding var files: [File]
     @State private var selectedFile: File?
     @State private var zoom: CGFloat = 3.0
+    @State private var lastZoom: CGFloat = 3.0
     @State private var nColumns: Int = 5
     private var nPlaceHolders: Int {
         let nLastRow = (files.count % nColumns)
@@ -57,7 +58,17 @@ struct GridView: View {
         .gesture(
             MagnifyGesture()
                 .onChanged({ value in
-                    updateZoom(value)
+                    zoom = value.magnification * lastZoom
+                    if zoom < minZoom {
+                        zoom = minZoom
+                    }
+                    if zoom > maxZoom {
+                        zoom = maxZoom
+                    }
+                    updateColumns()
+                })
+                .onEnded({ _ in
+                    lastZoom = zoom
                 })
         )
         .toolbar {
@@ -84,37 +95,33 @@ struct GridView: View {
     }
     
     private func zoomIn() {
-        withAnimation {
-            zoom = min(zoom + 1.0, maxZoom)
-            updateColumns()
-        }
+        zoom = min(zoom + 1.0, maxZoom)
+        updateColumns()
     }
 
     private func zoomOut() {
-        withAnimation {
-            zoom = max(zoom - 1.0, minZoom)
-            updateColumns()
-        }
+        zoom = max(zoom - 1.0, minZoom)
+        updateColumns()
     }
 
     private func updateZoom(_ value: MagnifyGesture.Value) {
-        withAnimation {
-            zoom = max(min(zoom * pow(value.magnification, 0.1), maxZoom), minZoom)
-            updateColumns()
-        }
+        zoom = max(min(zoom * pow(value.magnification, 0.1), maxZoom), minZoom)
+        updateColumns()
     }
 
     private func updateColumns() {
-        if (zoom <= 1.0) {
-            nColumns = nColumnsMaxZoom
-        } else {
-            #if os(macOS)
-            nColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 5  /* at least 5 files */
-            #endif
-            
-            #if os(iOS)
-            nColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 1  /* at least 1 file */
-            #endif
+        withAnimation {
+            if (zoom <= 1.0) {
+                nColumns = nColumnsMaxZoom
+            } else {
+#if os(macOS)
+                nColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 5  /* at least 5 files */
+#endif
+                
+#if os(iOS)
+                nColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 1  /* at least 1 file */
+#endif
+            }
         }
     }
 }
