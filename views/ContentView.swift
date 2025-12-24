@@ -40,6 +40,7 @@ struct ContentView: View {
                         ExpressionsView<FilterExpr>(fi: fi)
                     case .grid:
                         GridView(files: $fi.files)
+                            .ignoresSafeArea(.all)
                     case .settings:
                         SettingsView(fi: fi)
                     case .none:

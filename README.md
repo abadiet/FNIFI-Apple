@@ -19,7 +19,7 @@ Let's detailed the process a bit.
 - Build Settings > Search Paths > Header Search Paths
 - Build Settings > Search Paths > Library Search Paths
 - Build Settings > Linking General > Other Linker Flags
-- (For iOS) General > Framework, Libraries and Embedded Contents > Embedded every frameworks
+- General > Framework, Libraries and Embedded Contents > Embedded VLCKit.xcframework
 
 ### Link with VLCKit
 Follow [VLCLib](https://github.com/videolan/vlckit)'s instructions (using either Cocoapods or Carthage).

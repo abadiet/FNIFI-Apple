@@ -18,7 +18,7 @@ struct GridView: View {
     let minZoom: CGFloat = 1.0
     let maxZoom: CGFloat = 5.0
     let nColumnsMaxZoom: Int = 20
-    let radius: CGFloat = 1.5
+    let radius: CGFloat = 2.5
     let spacing: CGFloat = 1.5
     
     var body: some View {
@@ -49,8 +49,6 @@ struct GridView: View {
                     
                     if selectedFile != nil {
                         DetailedView(selectedFile: $selectedFile)
-                            .ignoresSafeArea(.all)
-                            .zIndex(1)
                             .navigationBarBackButtonHidden(true)
                     }
                 }
@@ -110,7 +108,13 @@ struct GridView: View {
         if (zoom <= 1.0) {
             nColumns = nColumnsMaxZoom
         } else {
-            nColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 1
+            #if os(macOS)
+            nColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 5  /* at least 5 files */
+            #endif
+            
+            #if os(iOS)
+            nColumns = 2 * (Int(maxZoom) - Int(ceil(zoom))) + 1  /* at least 1 file */
+            #endif
         }
     }
 }

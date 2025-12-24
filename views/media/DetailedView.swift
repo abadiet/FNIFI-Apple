@@ -13,7 +13,6 @@ struct DetailedView: View {
             Rectangle()
                 .fill(.windowBackground)
                 .edgesIgnoringSafeArea(.all)
-                .onTapGesture { selectedFile = nil }
             
             if let selectedFile {
                 if let url {

@@ -43,7 +43,11 @@ struct MovableView<Content: View>: View {
                     MagnifyGesture()
                         .onChanged({ value in
                             withAnimation(.interactiveSpring()) {
-                                scale = lastScale + value.magnification - 1.0
+                                scale = value.magnification * lastScale
+                                if scale < 0 {
+                                    scale = 0
+                                }
+                                print(value.magnification, lastScale, scale)
                                 offset.width = (lastOffset.width + (containerHalfSz.width - value.startLocation.x)) * scale / lastScale
                                 offset.height = (lastOffset.height + (containerHalfSz.height - value.startLocation.y)) * scale / lastScale
                             }
