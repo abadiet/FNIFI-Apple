@@ -15,6 +15,7 @@ struct SettingsView: View {
     var body: some View {
         if (!newCache) {
             VStack {
+                #if os(macOS)
                 Button(action: {
                     indexed = true
                     fi.index()
@@ -22,6 +23,7 @@ struct SettingsView: View {
                     Text("Index")
                 }
                 .disabled(indexed)
+                #endif
                 Button(action: {
                     defragmented = true
                     fi.defragment()
