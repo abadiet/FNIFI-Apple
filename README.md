@@ -1,28 +1,37 @@
 # FNIFI-Apple - MacOS/iOS/VisionOS/TVOS
 Apple's Photos application but with added connectivity, filtering and sorting algorithms.
     
-> [!INFORMATION]
+> [!WARNING]
 > Still in development...
 
 ## Building
 
-To build the application, you need to change several XCode settings, link with [VLCKit](https://github.com/videolan/vlckit) and build the [FNIFI](https://github.com/abadiet/FNIFI) library.
+To build the application, you need to: 
+- change several XCode settings,
+- link with the [VLCKit](https://github.com/videolan/vlckit) library,
+- build the [FNIFI](https://github.com/abadiet/FNIFI) library
+  
 Unfortunately, mixing a C++ library with Swift/Objective-C++ code is not easy, but the funniest is when you add cross-compilation... I wish you good luck.
+
 [Here](https://github.com/abadiet/FNIFI-Apple/blob/main/dependencies/build-fnifi.sh) is how I did (still not sure this was the proper way) for **compiling the FNIFI library for MacOS arm64 and IOS arm64 architectures**.
+
 [Here](https://github.com/abadiet/FNIFI-Apple/blob/main/dependencies/build-vlckit.sh) is how I did (the hard way but it works) for **compiling the VLCKit library for MacOS arm64 and IOS arm64 architectures**.
+
 Let's detailed the process a bit.
 
 ### XCode settings to change
+*(might be a bit different for you)*
 - Build Settings > Swift Compiler - Language > C++ and Objective-C interop. = C++/Objective-C++
 - Signing - App Sandbox & Hardened Runtime > Disable Library Validation = YES
 - Build Settings >  Signing - App Sandbox & Hardened Runtime > Outgoing Connections (Client) = YES
 - Build Settings > Search Paths > Header Search Paths
 - Build Settings > Search Paths > Library Search Paths
 - Build Settings > Linking General > Other Linker Flags
-- General > Framework, Libraries and Embedded Contents > Embedded VLCKit.xcframework
+- General > Framework, Libraries and Embedded Contents > Embed VLCKit.xcframework
 
 ### Link with VLCKit
 Follow [VLCLib](https://github.com/videolan/vlckit)'s instructions (using either Cocoapods or Carthage).
+
 If you don't mind using these, you can still compile it from source. [Here](https://github.com/abadiet/FNIFI-Apple/blob/main/dependencies/build-vlckit.sh) is how I did for **compiling the library for MacOS arm64 and IOS arm64 architectures**.
 
 ### Single architecture without cross-compilation
