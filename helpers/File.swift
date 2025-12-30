@@ -1,5 +1,7 @@
 import FNIFIModule
 import Foundation
+import CxxStdlib
+import CoreLocation
 
 
 struct File: Identifiable, Hashable {
@@ -14,12 +16,42 @@ struct File: Identifiable, Hashable {
         self.file = file
     }
     
+    func getPath() -> String {
+        return String(self.file.pointee.getPath())
+    }
+    
     func getLocalCopyPath() -> String {
         return String(self.file.pointee.getLocalCopyPath())
     }
     
     func getLocalPreviewPath() -> String {
         return String(self.file.pointee.getLocalPreviewPath())
+    }
+    
+    func get(kind: Expression.Kind, key: String = "") -> Optional<Int64> {
+        var result: fnifi.expr_t = 0
+        if (file.pointee.get(&result, Expression.GetFNIFIKind(kind: kind), std.string(key))) {
+            return Int64(result)
+        }
+        return nil
+    }
+    
+    static func setupCoordinates() {
+        
+    }
+
+    func getCoordinates() -> Optional<CLLocationCoordinate2D> {
+        /* TODO: fnifi::file::Info optimization */
+        let lat = get(kind: .LATITUDE)
+        let lon = get(kind: .LONGITUDE)
+        if let lat, let lon {
+            return CLLocationCoordinate2D(latitude: Double(lat) / 3600000.0, longitude: Double(lon) / 3600000.0)
+        }
+        return nil
+    }
+    
+    static func freeCoordinates() {
+        
     }
     
     func getKind() -> Kind {

@@ -10,6 +10,8 @@ cd build-fnifi
 git clone --recurse-submodules -j$(sysctl -n hw.ncpu)                         \
     https://github.com/abadiet/FNIFI
 sed -i "" "s/-Wall -Wextra -Werror//" FNIFI/CMakeLists.txt
+sed -i "" "s/#ifdef FNIFI_DEBUG/#define FNIFI_DEBUG\n#ifdef FNIFI_DEBUG/"     \
+    FNIFI/include/fnifi/utils/utils.hpp
 curl https://raw.githubusercontent.com/leetal/ios-cmake/refs/heads/master/ios.toolchain.cmake \
     -o ios.toolchain.cmake
 

@@ -5,7 +5,7 @@ struct ContentView: View {
     @StateObject private var fi = FNIFIWrapper()
     
     private enum Menu {
-        case collections, sort, filter, grid, settings
+        case collections, sort, filter, grid, map, settings
     }
     @State private var menu: Menu? = .grid
 
@@ -15,6 +15,9 @@ struct ContentView: View {
                 List(selection: $menu) {
                     NavigationLink(value: Menu.grid) {
                         Label("Grid", systemImage: "photo.on.rectangle")
+                    }
+                    NavigationLink(value: Menu.map) {
+                        Label("Map", systemImage: "map")
                     }
                     NavigationLink(value: Menu.collections) {
                         Label("Collections", systemImage: "rectangle.stack")
@@ -43,6 +46,9 @@ struct ContentView: View {
                             .ignoresSafeArea(.all)
                     case .settings:
                         SettingsView(fi: fi)
+                    case .map:
+                        MapView(files: $fi.files)
+                            .ignoresSafeArea(.all)
                     case .none:
                         EmptyView()
                     }

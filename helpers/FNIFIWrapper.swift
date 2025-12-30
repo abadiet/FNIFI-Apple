@@ -63,6 +63,12 @@ class FNIFIWrapper : ObservableObject {
         } catch {
             print("Error clearing caches directory: \(error.localizedDescription)")
         }
+        
+        /* reset */
+        isSetup = false
+        if let storing = Connection.Get(key: "FNIFI") {
+            setup(storing: storing)
+        }
     }
 
     func use(coll: Collection) {

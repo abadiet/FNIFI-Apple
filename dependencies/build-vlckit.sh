@@ -15,7 +15,7 @@ cd VLCKit
 ./compileAndBuildVLCKit.sh -r -x -a aarch64
 
 # IOS
-./compileAndBuildVLCKit.sh -r -a aarch64
+./compileAndBuildVLCKit.sh -f -r -a aarch64
 
 # Combine everything
 cp -r build/iOS/VLCKit.xcframework ..
