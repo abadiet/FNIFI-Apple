@@ -35,10 +35,6 @@ struct File: Identifiable, Hashable {
         }
         return nil
     }
-    
-    static func setupCoordinates() {
-        
-    }
 
     func getCoordinates() -> Optional<CLLocationCoordinate2D> {
         /* TODO: fnifi::file::Info optimization */
@@ -48,10 +44,6 @@ struct File: Identifiable, Hashable {
             return CLLocationCoordinate2D(latitude: Double(lat) / 3600000.0, longitude: Double(lon) / 3600000.0)
         }
         return nil
-    }
-    
-    static func freeCoordinates() {
-        
     }
     
     func getKind() -> Kind {
